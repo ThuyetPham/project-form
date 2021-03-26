@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+.mt-15 {
+  margin-top: 15px;
+}
+
+.mt-5 {
+  margin-left: 5px;
+}
+
+.panel-title button {
+  margin-left: 90px;
+  border-color: transparent;
+  background-color: transparent;
+
+}
