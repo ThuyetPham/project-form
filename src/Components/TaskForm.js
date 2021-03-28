@@ -5,9 +5,38 @@ class TaskForm extends React.Component {
     constructor() {
         super()
         this.state = {
+            id:'',
             name: '',
             status: false,
         }
+    }
+
+    componentWillMount () {
+        if(this.props.taskUpdate) {
+            this.setState({
+                id: this.props.taskUpdate.id,
+                name: this.props.taskUpdate.name,
+                status: this.props.taskUpdate.status,
+
+            })
+        }
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if(nextProps && nextProps.taskUpdate) {
+            this.setState({
+                id: nextProps.taskUpdate.id,
+                name: nextProps.taskUpdate.name,
+                status: nextProps.taskUpdate.status,
+        })
+    }else if(!nextProps.task) {
+        this.setState({
+            id: '',
+            name: '',
+            status: true
+        })
+    }
+
     }
 
     onCloseForm = () => {
@@ -32,11 +61,12 @@ class TaskForm extends React.Component {
     }
 
   render() {
+      var {id} = this.state;
     return (
       <>
              <div className="panel panel-warning">
                     <div className="panel-heading">
-                        <h3 className="panel-title">Thêm Công Việc
+                        <h3 className="panel-title">{id !=="" ? 'sửa công việc' : 'thêm công việc'}
                         <button onClick={ this.onCloseForm }> X </button>
                         </h3>
 

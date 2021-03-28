@@ -10,7 +10,8 @@ class App extends React.Component {
     super()
     this.state = {
       task: [],
-      isDisplayForm : false
+      isDisplayForm : false,
+      taskEditing: null,
     }
   }
 
@@ -35,31 +36,52 @@ generateID() {
 }
 
 onTOggleForm = () => {
+ if(this.state.isDisplayForm && this.state.taskEditing !== null) {
+
   this.setState({
+    taskEditing: null,
+    isDisplayForm: true
+  });
+}else{
+  //editing
+  this.setState({
+    taskEditing: null,
     isDisplayForm: !this.state.isDisplayForm
   });
+
+}
 }
 
 onCloseForm = () => {
   this.setState({
     isDisplayForm: false
   });
+
+}
+
+onShowForm = () => {
+  this.setState({
+    isDisplayForm: true
+  });
 }
 
 onSubmit = (data) => {
   var { task } = this.state;
- data.id = this.generateID();
- task.push(data);
- this.setState({
-   task: task
- });
- localStorage.setItem('tasks', JSON.stringify(task))
+  if(data.id === "" ) {
+    data.id = this.generateID();
+    task.push(data);
+  }else {
+    var index = this.findIndex(data.id);
+    task[index] = data;
+  }
 
-this.setState({
-    isDisplayForm: false
-  });
-
-
+  this.setState({
+    task: task,
+    taskEditing:null,
+    isDisplayForm:false
+  })
+  // this.onCloseForm()
+localStorage.setItem('tasks', JSON.stringify(task))
 }
 
 
@@ -90,6 +112,17 @@ DeleteItem = (id) => {
 
 }
 
+onUpDate = (id) => {
+  var { task } = this.state;
+  var index = this.findIndex(id);
+  console.log(index)
+  var taskEditing= task[index];
+   this.setState({
+    taskEditing: taskEditing,
+    isDisplayForm: true
+   })
+}
+
 findIndex = (id) => {
   var { task } = this.state;
    var result = -1;
@@ -104,13 +137,15 @@ findIndex = (id) => {
 }
 
 
+
   render() {
-    var { task, isDisplayForm } = this.state;
+    var { task, isDisplayForm, taskEditing } = this.state;
     var elmTaskForm = isDisplayForm
     ? 
     <TaskForm 
     onCloseForm={this.onCloseForm}
     onSubmit={this.onSubmit}
+    taskUpdate={taskEditing}
     /> 
     : '';
     return (
@@ -139,7 +174,7 @@ findIndex = (id) => {
                 {/* list */}
                 <div className="row mt-15">
                     <div className="col-xs-6 col-sm-9 col-md-12 col-lg-12">
-                       <TaskList tasks = { task } onUpdateStatus={this.onUpdateStatus} DeleteItem={this.DeleteItem}/>
+                       <TaskList tasks = { task } onUpdateStatus={this.onUpdateStatus} DeleteItem={this.DeleteItem} onUpDate={this.onUpDate}/>
                     </div>
                 </div>
             </div>
